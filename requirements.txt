@@ -30,7 +30,9 @@ mistune==3.0.2
 nbclient==0.10.0
 nbconvert==7.16.4
 nbformat==5.10.4
+numpy==1.24.4
 packaging==24.0
+pandas==2.0.3
 pandocfilters==1.5.1
 parso==0.8.4
 pexpect==4.9.0
@@ -44,6 +46,7 @@ pure-eval==0.2.2
 Pygments==2.17.2
 PySocks==1.7.1
 python-dateutil==2.9.0.post0
+pytz==2024.1
 pyzmq==26.0.2
 referencing==0.35.0
 requests==2.31.0
@@ -56,6 +59,7 @@ tornado==6.4
 tqdm==4.66.2
 traitlets==5.14.3
 typing_extensions==4.11.0
+tzdata==2024.1
 urllib3==2.2.1
 wcwidth==0.2.13
 webencodings==0.5.1
