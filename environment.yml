@@ -1,7 +1,7 @@
-name: /Users/jeremyolliffe/git/Yummi305/mushroomHarvest/.conda
+name: environment
 channels:
   - defaults
 dependencies:
   - python=3.8
   - ipykernel
-prefix: /Users/jeremyolliffe/git/Yummi305/mushroomHarvest/.conda
+  - pandas
