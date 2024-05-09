@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<robot name="simple_mushroom">
+    <!-- Colors -->
+    <material name="brown">
+        <color rgba="0.545 0.271 0.075 1"/>
+    </material>
+
+    <!-- Mushroom -->
+    <link name="stem_link">
+        <visual>
+            <geometry>
+                <cylinder radius="0.1" length="0.5"/>
+                <origin rpy="1.57 0 0" xyz="0 0 0.25"/>
+            </geometry>
+            <material name="brown"/>
+        </visual>
+        <inertial>
+            <mass value="0.1"/>
+            <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+        </inertial>
+    </link>
+
+    <link name="cap_link">
+        <visual>
+            <geometry>
+                <sphere radius="0.3"/>
+                <origin rpy="0 0 0" xyz="0 0 0.5"/>
+            </geometry>
+            <material name="brown"/>
+        </visual>
+        <inertial>
+            <mass value="0.2"/>
+            <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+        </inertial>
+    </link>
+
+    <joint name="stem_to_cap" type="fixed">
+        <parent link="stem_link"/>
+        <child link="cap_link"/>
+        <origin rpy="0 0 0" xyz="0 0 0.5"/>
+    </joint>
+</robot>
