@@ -27,8 +27,24 @@ class SimpleDrivingEnv(gym.Env):
             high=np.array([40, 40, 1, 1, 5, 5, 10, 10], dtype=np.float32))
         self.np_random, _ = gym.utils.seeding.np_random()
 
-        self.obstacles = []  # Initialize the obstacles attribute as an empty list
-        self.obstacle = None  # Initialize the obstacle object
+        self.mushrooms = []  # Initialize the mushrooms attribute as an empty list
+        self.mushroom = None  # Initialize the mushroom object
+
+        ## Insert code to randomise our mushroom and determine if it is edible or not.
+        print("A random mushroom has been spawned. Robot will investigate.")
+        
+        
+        # Initialize isEdible randomly at the beginning of the training loop
+        #self.isEdible = bool(np.random.randint(2))  # Randomly set to True or False
+        
+        # Test for is edible
+        self.isEdible = True
+        
+        # Test for is not edible
+        # self.isEdible = False
+        
+        # Check edible status
+        print("Is the random mushroom edible?: ", self.isEdible)
 
         if renders:
           self._p = bc.BulletClient(connection_mode=p.GUI)
@@ -49,6 +65,8 @@ class SimpleDrivingEnv(gym.Env):
         self.render_rot_matrix = None
         self.reset()
         self._envStepCounter = 0
+    
+        
 
     def get_reached_goal_status(self):
         return self.reached_goal
@@ -82,31 +100,40 @@ class SimpleDrivingEnv(gym.Env):
         reward = -dist_to_goal
         self.prev_dist_to_goal = dist_to_goal
 
-        # Calculate distance to obstacle
-        min_dist_to_obstacle = float('inf')
-        for obstacle in self.obstacles:
-            obstacle_pos, _ = self._p.getBasePositionAndOrientation(obstacle)
-            dist_to_obstacle = math.sqrt((carpos[0] - obstacle_pos[0]) ** 2 + (carpos[1] - obstacle_pos[1]) ** 2)
-            min_dist_to_obstacle = min(min_dist_to_obstacle, dist_to_obstacle)
+        # Calculate distance to mushroom
+        min_dist_to_mushroom = float('inf')
+        mushroom_pos, _ = self._p.getBasePositionAndOrientation(self.mushroom)
+        dist_to_mushroom = math.sqrt((carpos[0] - mushroom_pos[0]) ** 2 + (carpos[1] - mushroom_pos[1]) ** 2)
+        min_dist_to_mushroom = min(min_dist_to_mushroom, dist_to_mushroom)
 
-        # Penalize if too close to obstacle
-        if min_dist_to_obstacle < 1:
-            print(f"Phew, close call!")
-            reward -= 10  # Adjust penalty as needed
-            
-        # Penalise for collision
-        if min_dist_to_obstacle <= 0.75:
-            print(f"Utoh, collision!")
-            # reward -=50
+        # Penalize if too close to mushroom
+        if min_dist_to_mushroom < 1:
+            if self.isEdible:
+                print(f"Sticking close to mushroom")
+                reward += 10
+            else:
+                print(f"Phew, close call!")
+                reward -= 10
 
+        # Mushroom collection if edible
+        if self.isEdible:
+            if min_dist_to_mushroom <= 0.5:
+                print(f"Mushroom collected!")
+                reward += 30
+                self._p.changeVisualShape(self.mushroom, 0, rgbaColor=[0, 0, 0, 0])
+                self._p.changeVisualShape(self.mushroom, 1, rgbaColor=[0, 0, 0, 0])
+                
         # Done by reaching goal
         if dist_to_goal < 1.5 and not self.reached_goal:
-            reward += 50
+            reward += 100
             print("REACHED GOAL")
             self.done = True
             self.reached_goal = True
+        
         ob = car_ob
         return ob, reward, self.done, dict()
+
+
 
     def seed(self, seed=None):
         self.np_random, seed = gym.utils.seeding.np_random(seed)
@@ -133,18 +160,18 @@ class SimpleDrivingEnv(gym.Env):
         # Visual element of the goal
         self.goal_object = Goal(self._p, self.goal)
 
-        # Calculate obstacle position between car and goal
+        # Calculate mushroom position between car and goal
         carpos, _ = self._p.getBasePositionAndOrientation(self.car.car)
         goalpos, _ = self._p.getBasePositionAndOrientation(self.goal_object.goal)
-        obstacle_x = (carpos[0] + goalpos[0]) / 2
-        obstacle_y = (carpos[1] + goalpos[1]) / 2
-        obstacle_pos = [obstacle_x, obstacle_y, 0.5]
+        mushroom_x = (carpos[0] + goalpos[0]) / 2
+        mushroom_y = (carpos[1] + goalpos[1]) / 2
+        mushroom_pos = [mushroom_x, mushroom_y, 0.5]
 
-        # # Load obstacles
-        # num_obstacles = 1  ## CHOOSE NUMBER OF OBSTACLES
-        # for _ in range(num_obstacles):
-        #     self.obstacle = self._p.loadURDF(fileName="/home/student/git/aiUTS/simple_driving/resources/simpleobstacle.urdf", basePosition=obstacle_pos)
-        #     self.obstacles.append(self.obstacle)
+        # Load mushrooms
+        if self.isEdible:
+            self.mushroom = self._p.loadURDF(fileName="simple_driving/resources/simplemushroom.urdf", basePosition=mushroom_pos)
+        else:
+            self.mushroom = self._p.loadURDF(fileName="simple_driving/resources/poisonmushroom.urdf", basePosition=mushroom_pos)
 
         # Get observation to return
         carpos = self.car.get_observation()
@@ -211,14 +238,14 @@ class SimpleDrivingEnv(gym.Env):
         invCarPos, invCarOrn = self._p.invertTransform(carpos, carorn)
         goalPosInCar, goalOrnInCar = self._p.multiplyTransforms(invCarPos, invCarOrn, goalpos, goalorn)
 
-        # Calculate distance to closest obstacle
-        min_dist_to_obstacle = float('inf')
-        for obstacle in self.obstacles:
-            obstacle_pos, _ = self._p.getBasePositionAndOrientation(obstacle)
-            dist_to_obstacle = math.sqrt((carpos[0] - obstacle_pos[0]) ** 2 + (carpos[1] - obstacle_pos[1]) ** 2)
-            min_dist_to_obstacle = min(min_dist_to_obstacle, dist_to_obstacle)
+        # Calculate distance to closest mushroom
+        min_dist_to_mushroom = float('inf')
+        for mushroom in self.mushrooms:
+            mushroom_pos, _ = self._p.getBasePositionAndOrientation(mushroom)
+            dist_to_mushroom = math.sqrt((carpos[0] - mushroom_pos[0]) ** 2 + (carpos[1] - mushroom_pos[1]) ** 2)
+            min_dist_to_mushroom = min(min_dist_to_mushroom, dist_to_mushroom)
 
-        observation = [goalPosInCar[0], goalPosInCar[1], min_dist_to_obstacle]
+        observation = [goalPosInCar[0], goalPosInCar[1], min_dist_to_mushroom]
         return observation
 
     def _termination(self):

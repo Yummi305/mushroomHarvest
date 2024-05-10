@@ -1,8 +1,11 @@
 <?xml version="1.0"?>
-<robot name="simple_mushroom">
+<robot name="poison_mushroom">
     <!-- Colors -->
-    <material name="brown">
-        <color rgba="0.545 0.271 0.075 1"/>
+    <material name="purple">
+        <color rgba="0.5 0 0.5 1"/>
+    </material>
+    <material name="white">
+        <color rgba="1 1 1 1"/>
     </material>
 
     <!-- Mushroom -->
@@ -12,7 +15,7 @@
                 <cylinder radius="0.1" length="0.5"/>
                 <origin rpy="1.57 0 0" xyz="0 0 0.25"/>
             </geometry>
-            <material name="brown"/>
+            <material name="white"/> <!-- Updated material for stem -->
         </visual>
         <collision>
             <geometry>
@@ -32,7 +35,7 @@
                 <sphere radius="0.3"/>
                 <origin rpy="0 0 0" xyz="0 0 0.5"/>
             </geometry>
-            <material name="brown"/>
+            <material name="purple"/> <!-- Updated material for head -->
         </visual>
         <collision>
             <geometry>
