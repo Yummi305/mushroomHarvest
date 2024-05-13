@@ -2,35 +2,35 @@ import pickle
 
 import numpy as np
 import pandas as pd
+from mushroomClassifier import MushroomClassifier
 from sklearn.linear_model import LogisticRegression
 
 # Load the model
-model_path = './pretrained_models/logreg_model_v2.pkl'
-logreg = pickle.load(open(model_path, 'rb'))
+mushroom_classifier = MushroomClassifier()
 
 
-def isPoisonous(mushroom_features, model):
-    # Create empty dataframe with columns from model.feature_names_in_
-    df_test = pd.DataFrame(columns=model.feature_names_in_)
+# def isPoisonous(mushroom_features, model):
+#     # Create empty dataframe with columns from model.feature_names_in_
+#     df_test = pd.DataFrame(columns=model.feature_names_in_)
 
-    # Convert mushroom dictionary to DataFrame
-    df_mushroom = pd.DataFrame(mushroom_features)
-    df_mushroom = pd.get_dummies(df_mushroom)
+#     # Convert mushroom dictionary to DataFrame
+#     df_mushroom = pd.DataFrame(mushroom_features)
+#     df_mushroom = pd.get_dummies(df_mushroom)
 
-    # Concat mushroom data to empty DataFrame
-    df_appended = pd.concat([df_test, df_mushroom], axis=0)
+#     # Concat mushroom data to empty DataFrame
+#     df_appended = pd.concat([df_test, df_mushroom], axis=0)
 
-    # Replace NaNs with 0
-    df_appended = df_appended.fillna(0)
+#     # Replace NaNs with 0
+#     df_appended = df_appended.fillna(0)
 
-    poisonous = model.predict(df_appended)
-    return bool(poisonous)
+#     poisonous = model.predict(df_appended)
+#     return bool(poisonous)
 
 
 # lets test this
 # make a mushroom - Species: Amanita bisporigera (Destroying Angel)
 # this is poisonous
-Amanita_bisporigera = {
+amanita_bisporigera = {
     "cap-shape": ["x"],
     "cap-surface": ["s"],
     "cap-color": ["n"],
@@ -57,7 +57,7 @@ Amanita_bisporigera = {
 
 # make a mushroom - Species: Agaricus bisporus (Button Mushroom)
 # this is NOT poisonous
-Agaricus_bisporus = {
+agaricus_bisporus = {
     "cap-shape": ["s"],  # Shape: Spherical
     "cap-surface": ["y"],  # Surface: Scaly
     "cap-color": ["n"],  # Color: Brown
@@ -82,7 +82,13 @@ Agaricus_bisporus = {
     "habitat": ["d"]  # Habitat: Woods
 }
 
-print("Amanita bisporigera is poisonous? {}".format(
-    isPoisonous(Amanita_bisporigera, logreg)))
-print("Lactarius sec is poisonous? {}".format(
-    isPoisonous(Agaricus_bisporus, logreg)))
+# print("Amanita bisporigera is poisonous? {}".format(
+#     isPoisonous(Amanita_bisporigera, logreg)))
+# print("Lactarius sec is poisonous? {}".format(
+#     isPoisonous(Agaricus_bisporus, logreg)))
+
+amanita_is_poisonous = mushroom_classifier.is_poisonous(amanita_bisporigera)
+agaricus_is_poisonous = mushroom_classifier.is_poisonous(agaricus_bisporus)
+
+print("Amanita bisporigera is poisonous? {}".format(amanita_is_poisonous))
+print("Agaricus bisporus is poisonous? {}".format(agaricus_is_poisonous))

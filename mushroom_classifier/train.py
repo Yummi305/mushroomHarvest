@@ -5,7 +5,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 
 
-def preprocessData(data: pd.DataFrame) -> pd.DataFrame:
+def preprocess_training_data(data: pd.DataFrame) -> pd.DataFrame:
     # Split classes and features
     classes = data['class']
     features = data.drop('class', axis=1)
@@ -32,7 +32,7 @@ def main():
     mushrooms_df = pd.read_csv(mushrooms_csv)
 
     # Preprocess the data
-    mushrooms_df = preprocessData(mushrooms_df)
+    mushrooms_df = preprocess_training_data(mushrooms_df)
 
     X = mushrooms_df.drop('poisonous', axis=1)
     y = mushrooms_df['poisonous']
