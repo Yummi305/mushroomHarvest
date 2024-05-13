@@ -5,7 +5,7 @@ import pandas as pd
 from sklearn.linear_model import LogisticRegression
 
 # Load the model
-model_path = './models/logreg_model_v1.pkl'
+model_path = './pretrained_models/logreg_model_v2.pkl'
 logreg = pickle.load(open(model_path, 'rb'))
 
 
