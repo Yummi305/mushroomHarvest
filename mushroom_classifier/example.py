@@ -1,35 +1,10 @@
-import pickle
-
-import numpy as np
-import pandas as pd
 from mushroomClassifier import MushroomClassifier
-from sklearn.linear_model import LogisticRegression
 
 # Load the model
 mushroom_classifier = MushroomClassifier()
 
-
-# def isPoisonous(mushroom_features, model):
-#     # Create empty dataframe with columns from model.feature_names_in_
-#     df_test = pd.DataFrame(columns=model.feature_names_in_)
-
-#     # Convert mushroom dictionary to DataFrame
-#     df_mushroom = pd.DataFrame(mushroom_features)
-#     df_mushroom = pd.get_dummies(df_mushroom)
-
-#     # Concat mushroom data to empty DataFrame
-#     df_appended = pd.concat([df_test, df_mushroom], axis=0)
-
-#     # Replace NaNs with 0
-#     df_appended = df_appended.fillna(0)
-
-#     poisonous = model.predict(df_appended)
-#     return bool(poisonous)
-
-
-# lets test this
-# make a mushroom - Species: Amanita bisporigera (Destroying Angel)
-# this is poisonous
+# Species: Amanita bisporigera (Destroying Angel)
+# Poisonous: True
 amanita_bisporigera = {
     "cap-shape": ["x"],
     "cap-surface": ["s"],
@@ -55,8 +30,8 @@ amanita_bisporigera = {
     "habitat": ["u"]
 }
 
-# make a mushroom - Species: Agaricus bisporus (Button Mushroom)
-# this is NOT poisonous
+# Species: Agaricus bisporus (Button Mushroom)
+# Poisonous: False
 agaricus_bisporus = {
     "cap-shape": ["s"],  # Shape: Spherical
     "cap-surface": ["y"],  # Surface: Scaly
@@ -81,11 +56,6 @@ agaricus_bisporus = {
     "population": ["y"],  # Population: Abundant
     "habitat": ["d"]  # Habitat: Woods
 }
-
-# print("Amanita bisporigera is poisonous? {}".format(
-#     isPoisonous(Amanita_bisporigera, logreg)))
-# print("Lactarius sec is poisonous? {}".format(
-#     isPoisonous(Agaricus_bisporus, logreg)))
 
 amanita_is_poisonous = mushroom_classifier.is_poisonous(amanita_bisporigera)
 agaricus_is_poisonous = mushroom_classifier.is_poisonous(agaricus_bisporus)

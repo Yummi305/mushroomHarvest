@@ -1,3 +1,4 @@
+import os
 import pickle
 
 import pandas as pd
@@ -25,8 +26,8 @@ def preprocess_training_data(data: pd.DataFrame) -> pd.DataFrame:
     return preprocessed
 
 
-def main():
-    mushrooms_csv = './data/mushrooms.csv'
+def train_linear_regression(save_to_file, mushrooms_csv):
+    model_name = 'logreg_model_v2'
 
     # Load the data
     mushrooms_df = pd.read_csv(mushrooms_csv)
@@ -44,12 +45,17 @@ def main():
     logreg.fit(X_train, y_train)
 
     # Write to file
-    model_path = './pretrained_models/logreg_model_v2.pkl'
+    if not save_to_file:
+        return logreg, X_train, X_test, y_train, y_test
+
+    model_path = './pretrained_models/' + model_name + '.pkl'
 
     pickle.dump(logreg, open(model_path, 'wb'))
 
     print('Model saved to:', model_path)
 
+    return logreg, X_train, X_test, y_train, y_test
+
 
 if __name__ == "__main__":
-    main()
+    train_linear_regression(True, './data/mushrooms.csv')
